@@ -1,0 +1,9 @@
+:root {
+  --red: red;
+  --blue: #4665b7;
+  --secondary-color: gray;
+}
+
+a {
+  color: var(--blue);
+}

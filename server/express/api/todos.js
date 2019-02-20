@@ -15,19 +15,25 @@ router.post('/', async (req, res) => {
 
   const todo = await rawTodo.save();
 
-  res.json(todo);
+  res.json({
+    payload: todo
+  });
 })
 
 router.get('/:id', async (req, res) => {
   const todo = await Todo.findById(req.params.id);
 
-  res.json(todo);
+  res.json({
+    payload: todo
+  });
 })
 
 router.post('/:id', async (req, res) => {
   const todo = await Todo.findByIdAndUpdate(req.params.id, req.body);
 
-  res.json(todo);
+  res.json({
+    payload: todo
+  });
 })
 
 router.use((err, req, res, next) => {

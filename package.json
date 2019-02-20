@@ -7,19 +7,33 @@
   "scripts": {
     "build": "gatsby build",
     "develop": "gatsby develop",
-    "start": "npm run develop",
+    "start:client": "npm run develop -p 4000",
     "start:server": "node server/startServer.js",
     "serve": "gatsby serve",
     "test": "echo \"Write tests! -> https://gatsby.app/unit-testing\""
   },
   "dependencies": {
     "@babel/plugin-transform-runtime": "^7.2.0",
+    "@emotion/core": "^10.0.7",
+    "@emotion/styled": "^10.0.7",
+    "axios": "^0.18.0",
+    "axios-debug-log": "^0.4.0",
     "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
     "express": "^4.16.4",
     "gatsby": "^2.1.5",
+    "gatsby-plugin-create-client-paths": "^2.0.4",
+    "gatsby-plugin-typography": "^2.2.7",
+    "lodash": "^4.17.11",
     "mongoose": "^5.4.14",
     "react": "^16.8.2",
-    "react-dom": "^16.8.2"
+    "react-dom": "^16.8.2",
+    "react-typography": "^0.16.18",
+    "redux": "^4.0.1",
+    "redux-react-hook": "^3.1.0",
+    "redux-thunk": "^2.3.0",
+    "typography": "^0.16.18",
+    "typography-theme-wordpress-2015": "^0.16.18"
   },
   "repository": {
     "type": "git",
@@ -29,7 +43,7 @@
     "url": "https://github.com/gatsbyjs/gatsby/issues"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.3.1",
-    "@babel/register": "^7.0.0"
+    "@babel/register": "^7.0.0",
+    "babel-preset-gatsby": "^0.1.7"
   }
 }

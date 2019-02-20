@@ -36,6 +36,41 @@ router.post('/:id', async (req, res) => {
   });
 })
 
+router.delete('/:id', async (req, res) => {
+  const todo = await Todo.findByIdAndDelete(req.params.id);
+
+  res.json({
+    payload: todo,
+  });
+})
+
+router.put('/:id/activate', async (req, res) => {
+  const todo = await Todo.findByIdAndUpdate(req.params.id, {
+    $unset: { completedAt: true },
+  }, {
+    new: true,
+  });
+
+  res.json({
+    payload: todo
+  });
+})
+
+router.delete('/:id/activate', async (req, res) => {
+  const todo = await Todo.findByIdAndUpdate(req.params.id, {
+    $set: {
+      completedAt: Date.now()
+    },
+  }, {
+    new: true,
+  });
+
+  res.json({
+    payload: todo
+  });
+})
+
+
 router.use((err, req, res, next) => {
   if (err) {
     res.status(400).json(err);

@@ -1,18 +1,39 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
-import { activateTodo, deactivateTodo, deleteTodo } from '../../redux/actions';
+import { activateTodo, deactivateTodo, updateTodo, deleteTodo } from '../../redux/actions';
 
 export default function TodoItem({ todoId }) {
-  const { todo, activateTodo, deactivateTodo, deleteTodo } = useTodo(todoId);
+  const { todo, activateTodo, deactivateTodo, updateTodo, deleteTodo } = useTodo(todoId);
+  const [ isEditing, enableEditing ] = useState(false);
+  const [ message, setMessage ] = useState(todo.message);
 
   return (
-    <ol>
+    <ol
+      onDoubleClick={e => enableEditing(true)}
+      onMouseLeave={e => enableEditing(false)}
+    >
       <button style={{ color: 'red' }} onClick={deleteTodo}>x</button>
       <button style={{ color: 'yellow' }} onClick={deactivateTodo}>-</button>
       <button style={{ color: 'green' }} onClick={activateTodo}>v</button>
-      {!todo.completedAt
-        ? <span>{todo.message}</span>
-        : <del>{todo.message}</del>
+      { isEditing
+        ? <form onSubmit={e => {
+            e.preventDefault();
+            updateTodo({
+              ...todo,
+              message,
+            });
+            enableEditing(false);
+          }}>
+            <input
+              autoFocus
+              type="text"
+              value={message}
+              onChange={e => setMessage(e.target.value)}
+            />
+          </form>
+        : !todo.completedAt
+          ? <span>{todo.message}</span>
+          : <del>{todo.message}</del>
       }
     </ol>
   )
@@ -41,6 +62,12 @@ function useTodo(todoId) {
       },
       [todoId],
     ),
+    updateTodo: useCallback(
+      todo => {
+        dispatch(updateTodo(todo));
+      },
+      [],
+    ),
     deleteTodo: useCallback(
       () => {
         dispatch(deleteTodo(todoId));
@@ -49,3 +76,4 @@ function useTodo(todoId) {
     ),
   };
 }
+

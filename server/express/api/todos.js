@@ -29,7 +29,9 @@ router.get('/:id', async (req, res) => {
 })
 
 router.post('/:id', async (req, res) => {
-  const todo = await Todo.findByIdAndUpdate(req.params.id, req.body);
+  const todo = await Todo.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+  });
 
   res.json({
     payload: todo

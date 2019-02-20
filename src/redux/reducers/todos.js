@@ -1,11 +1,13 @@
 const ADD_TODO = 'ADD_TODO';
 const ACTIVATE_TODO = 'ACTIVATE_TODO';
+const UPDATE_TODO = 'UPDATE_TODO';
 const DELETE_TODO = 'DELETE_TODO';
 
 const todo = (state = {}, action) => {
   switch (action.type) {
     case ADD_TODO:
     case ACTIVATE_TODO:
+    case UPDATE_TODO:
       return {
         ...state,
         ...action.payload,
@@ -21,6 +23,7 @@ const todos = (state = {}, action) => {
   switch (action.type) {
     case ADD_TODO:
     case ACTIVATE_TODO:
+    case UPDATE_TODO:
       return {
         ...state,
         [action.payload._id]: todo(undefined, action),
@@ -55,6 +58,17 @@ export function addTodo(rawTodo) {
     disptch(primitiveAction(ADD_TODO, todo));
 
     return todo;
+  }
+}
+
+export function updateTodo(todo) {
+  return async (dispatch, getState, api) => {
+    const response = await api.post(`/todos/${todo._id}`, todo);
+    const updatedTodo = response.data.payload;
+
+    dispatch(primitiveAction(UPDATE_TODO, updatedTodo));
+
+    return updatedTodo;
   }
 }
 

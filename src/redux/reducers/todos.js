@@ -105,6 +105,26 @@ export function deactivateTodo(todoId) {
   }
 }
 
+export function activeAllTodos(todoIds = []) {
+  return async (dispatch, getState, api) => {
+    await Promise.all(
+      todoIds.map(
+        todoId => dispatch(activateTodo(todoId))
+      )
+    );
+  }
+}
+
+export function deactiveAllTodos(todoIds = []) {
+  return async (dispatch, getState, api) => {
+    await Promise.all(
+      todoIds.map(
+        todoId => dispatch(deactivateTodo(todoId))
+      )
+    );
+  }
+}
+
 function primitiveAction(type, payload) {
   return { type, payload };
 }

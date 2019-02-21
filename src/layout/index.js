@@ -5,7 +5,8 @@ import './theme.css';
 
 const Wrapper = styled.div`
   margin: auto;
-  max-width: ${rhythm(24)};
+  padding: 0 ${rhythm(0.5)};
+  max-width: ${rhythm(12)};
 `;
 
 export default function Layout({ children }) {

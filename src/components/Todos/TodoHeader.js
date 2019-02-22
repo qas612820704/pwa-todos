@@ -8,6 +8,8 @@ import { activeAllTodos, deactiveAllTodos } from '../../redux/actions';
 
 const Wrapper = styled.header`
   padding: 0.6em;
+  border-bottom: 1px solid #ededed;
+  box-shadow: inset 0 -2px 1px rgba(0,0,0,0.03);
   position: relative;
 
   form {

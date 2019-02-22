@@ -1,5 +1,6 @@
 const ADD_TODO = 'ADD_TODO';
 const ACTIVATE_TODO = 'ACTIVATE_TODO';
+const DEACTIVATE_TODO = 'DEACTIVATE_TODO';
 const UPDATE_TODO = 'UPDATE_TODO';
 const DELETE_TODO = 'DELETE_TODO';
 
@@ -7,6 +8,7 @@ const todo = (state = {}, action) => {
   switch (action.type) {
     case ADD_TODO:
     case ACTIVATE_TODO:
+    case DEACTIVATE_TODO:
     case UPDATE_TODO:
       return {
         ...state,
@@ -23,6 +25,7 @@ const todos = (state = {}, action) => {
   switch (action.type) {
     case ADD_TODO:
     case ACTIVATE_TODO:
+    case DEACTIVATE_TODO:
     case UPDATE_TODO:
       return {
         ...state,
@@ -99,7 +102,7 @@ export function deactivateTodo(todoId) {
     const response = await api.delete(`/todos/${todoId}/activate`);
     const todo = response.data.payload;
 
-    dispatch(primitiveAction(ACTIVATE_TODO, todo));
+    dispatch(primitiveAction(DEACTIVATE_TODO, todo));
 
     return todo;
   }

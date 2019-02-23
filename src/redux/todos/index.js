@@ -1,7 +1,8 @@
+import { combineReducers } from 'redux';
 import * as $ from './constants';
 import todo from './todo';
 
-const todos = (state = {}, action) => {
+const byId = (state = {}, action) => {
   switch (action.type) {
     case $.ADD_TODO:
     case $.ACTIVATE_TODO:
@@ -20,4 +21,25 @@ const todos = (state = {}, action) => {
   }
 }
 
-export default todos;
+
+const allIds = (state = [], action) => {
+  switch (action.type) {
+    case $.ADD_TODO:
+      const newTodo = action.payload;
+      // TODO: O(n) insertion, needs to optimize by using binary insert
+      return [
+        newTodo._id,
+        ...state,
+      ]
+    case $.DELETE_TODO:
+      const deletedTodo = action.payload;
+      return state.filter(todoId => todoId !== deletedTodo._id);
+    default:
+      return state;
+  }
+}
+
+export default combineReducers({
+  byId,
+  allIds,
+});

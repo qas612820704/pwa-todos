@@ -159,7 +159,7 @@ export default function TodoItem({ todoId }) {
 function useTodo(todoId) {
   const todo = useMappedState(
     useCallback(
-      state => state.todos[todoId],
+      state => state.todos.byId[todoId].data,
       [todoId],
     ),
   );

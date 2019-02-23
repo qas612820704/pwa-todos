@@ -12,7 +12,7 @@ const data = (state = {}, action) => {
         ...action.payload,
       }
     case $.DELETE_TODO:
-      return undefined;
+      return null;
     default:
       return state;
   }

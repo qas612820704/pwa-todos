@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import { omitBy } from 'lodash';
 import * as $ from './constants';
 import todo from './todo';
 
@@ -8,14 +9,13 @@ const byId = (state = {}, action) => {
     case $.ACTIVATE_TODO:
     case $.DEACTIVATE_TODO:
     case $.UPDATE_TODO:
+    case $.DELETE_TODO:
+      const id = action.payload._id;
+
       return {
         ...state,
-        [action.payload._id]: todo(undefined, action),
+        [id]: todo(state[id], action),
       }
-    case $.DELETE_TODO:
-      const deletedTodoId = action.payload._id;
-      const { [deletedTodoId]: _, ...nextState } = state;
-      return nextState;
     default:
       return state;
   }

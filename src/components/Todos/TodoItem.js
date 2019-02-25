@@ -159,14 +159,14 @@ export default function TodoItem({ todoId }) {
 function useTodo(todoId) {
   const todo = useMappedState(
     useCallback(
-      state => state.todos.byId[todoId].data,
+      state => state.todos.byId[todoId],
       [todoId],
     ),
   );
   const dispatch = useDispatch();
 
   return {
-    todo,
+    todo: todo.data,
     activateTodo: useCallback(
       () => {
         dispatch(activateTodo(todoId));

@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
-import { keys, map } from 'lodash';
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import TodoInput from './TodoInput';
@@ -52,18 +51,16 @@ function ToggleAllBtn() {
   const dispatch = useDispatch();
   const todoIds = useMappedState(
     useCallback(
-      state => keys(state.todos),
+      state => state.todos.allIds,
       [],
     ),
   );
 
   const isAllTodosCompeleted = useMappedState(
     useCallback(
-      state =>
-        map(
-          state.todos, (todo) => todo.completedAt
-        )
-        .every(completedAt => completedAt),
+      state => state.todos.allIds
+        .map(todoId => state.todos.byId[todoId].data)
+        .every(todo => todo.completedAt),
       [],
     ),
   )
@@ -71,11 +68,12 @@ function ToggleAllBtn() {
   return (
     <Button
       isAllTodosCompeleted={isAllTodosCompeleted}
-      children="❯"
       onClick={() => { isAllTodosCompeleted
         ? dispatch(activeAllTodos(todoIds))
         : dispatch(deactiveAllTodos(todoIds))
       }}
-    />
+    >
+      ❯
+    </Button>
   );
 }

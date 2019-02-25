@@ -34,7 +34,8 @@
     "redux-thunk": "^2.3.0",
     "typeface-noto-sans": "^0.0.54",
     "typography": "^0.16.18",
-    "typography-theme-wordpress-2015": "^0.16.18"
+    "typography-theme-wordpress-2015": "^0.16.18",
+    "uuid": "^3.3.2"
   },
   "repository": {
     "type": "git",

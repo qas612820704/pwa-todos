@@ -33,9 +33,9 @@ const Wrapper = styled.section`
 export default function Todos() {
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(getTodos());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(getTodos());
+  // }, []);
 
   return (
     <Wrapper>

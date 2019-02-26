@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'redux-react-hook';
 import styled from '@emotion/styled';
-import { rhythm } from '../../layout/typography';
 import { addTodo } from '../../redux/actions';
 
 const Form = styled.form`

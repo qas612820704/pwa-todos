@@ -9,17 +9,16 @@ const byId = (state = {}, action) => {
     case $.ACTIVATE_TODO:
     case $.DEACTIVATE_TODO:
     case $.UPDATE_TODO:
+    case $.DELETE_TODO:
+    case $.SYNCING_TODO_REQUEST:
+    case $.SYNCING_TODO_SUCCESS:
+    case $.SYNCING_TODO_FAILURE:
       const id = action.payload._id;
 
       return {
         ...state,
         [id]: todo(state[id], action),
       }
-    case $.DELETE_TODO:
-      return omitBy(
-        state,
-        (todo) => todo.data._id === action.payload._id
-      );
     default:
       return state;
   }

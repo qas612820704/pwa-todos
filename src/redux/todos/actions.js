@@ -1,19 +1,25 @@
 import uuid from 'uuid/v4';
 import * as $ from './constants';
 
-// TODO: change it to get from PouchDB
-// export function getTodos() {
-//   return async (dispatch, getState, api) => {
-//     const response = await api.get('/todos');
-//     const todos = response.data.payload;
+export function getTodos() {
+  return async (dispatch, getState, { db }) => {
+    const todos = await db
+      .allDocs({
+        include_docs: true,
+      })
+      .then(result => result.rows)
+      .then(rows => rows.map(row => row.doc));
 
-//     todos.forEach(todo => {
-//       dispatch(primitiveAction($.ADD_TODO, todo));
-//     })
+    todos.forEach(todo => {
+      dispatch({
+        type: $.ADD_TODO,
+        payload: todo,
+      });
+    });
 
-//     return todos;
-//   }
-// }
+    return todos;
+  }
+}
 
 export function addTodo(fields) {
   return async (dispatch, getState, api) => {
@@ -27,19 +33,22 @@ export function addTodo(fields) {
       payload: todo
     });
 
-    // TODO: FETCH_TODO
+    return await dispatch(
+      syncTodoRequest(todo._id),
+    );
   }
 }
 
 export function updateTodo(todo) {
   return async (dispatch, getState, api) => {
-
     dispatch({
      type: $.UPDATE_TODO,
      payload: todo,
     });
 
-    // TODO: FETCH_TODO
+    return await dispatch(
+      syncTodoRequest(todo._id),
+    );
   }
 }
 
@@ -52,7 +61,9 @@ export function deleteTodo(todoId) {
       },
      });
 
-     // TODO: FETCH_TODO
+    return await dispatch(
+      syncTodoRequest(todoId),
+    );
   }
 }
 
@@ -65,7 +76,9 @@ export function activateTodo(todoId) {
       },
      });
 
-     // TODO: FETCH_TODO
+    return await dispatch(
+      syncTodoRequest(todoId),
+    );
   }
 }
 
@@ -78,7 +91,9 @@ export function deactivateTodo(todoId) {
       },
      });
 
-     // TODO: FETCH_TODO
+     return await dispatch(
+      syncTodoRequest(todoId),
+    );
   }
 }
 
@@ -99,5 +114,37 @@ export function deactiveAllTodos(todoIds = []) {
         todoId => dispatch(deactivateTodo(todoId))
       )
     );
+  }
+}
+
+export function syncTodoRequest(todoId) {
+  return async (dispatch, getState, { db }) => {
+    dispatch({
+      type: $.SYNCING_TODO_REQUEST,
+      payload: { _id: todoId },
+    });
+
+    const todo = getState().todos.byId[todoId].data;
+
+    console.log('todo', todo);
+
+    try {
+      const syncedTodo = await db
+        .put(todo, { force: true })
+        .then(puttedTodo => db.get(puttedTodo.id));
+
+      return dispatch({
+        type: $.SYNCING_TODO_SUCCESS,
+        payload: syncedTodo,
+      })
+    } catch (error) {
+      return dispatch({
+        type: $.SYNCING_TODO_FAILURE,
+        payload: {
+          _id: todoId,
+          error,
+        },
+      });
+    }
   }
 }

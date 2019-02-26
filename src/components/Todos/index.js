@@ -3,7 +3,7 @@ import { useDispatch } from 'redux-react-hook';
 import styled from '@emotion/styled';
 import TodoHeader from './TodoHeader';
 import TodoList from './TodoList';
-import { getTodos } from '../../redux/actions';
+import { restoreTodos } from '../../redux/actions';
 
 const Wrapper = styled.section`
   position: relative;
@@ -34,7 +34,7 @@ export default function Todos() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getTodos());
+    dispatch(restoreTodos());
   }, []);
 
   return (

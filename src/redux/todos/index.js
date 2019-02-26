@@ -1,26 +1,22 @@
 import { combineReducers } from 'redux';
-import { omitBy } from 'lodash';
+import { mapKeys } from 'lodash';
 import * as $ from './constants';
 import todo from './todo';
 
 const byId = (state = {}, action) => {
   switch (action.type) {
-    case $.ADD_TODO:
-    case $.ACTIVATE_TODO:
-    case $.DEACTIVATE_TODO:
-    case $.UPDATE_TODO:
-    case $.DELETE_TODO:
-    case $.SYNCING_TODO_REQUEST:
-    case $.SYNCING_TODO_SUCCESS:
-    case $.SYNCING_TODO_FAILURE:
-      const id = action.payload._id;
+    case $.RESTORE_TODOS:
+      return mapKeys(action.payload, (todo) => todo._id);
 
+    default:
+      if (!action.type.includes('TODO'))
+        return state;
+
+      const id = action.payload._id;
       return {
         ...state,
         [id]: todo(state[id], action),
-      }
-    default:
-      return state;
+      };
   }
 }
 
@@ -33,10 +29,12 @@ const allIds = (state = [], action) => {
       return [
         newTodo._id,
         ...state,
-      ]
+      ];
     case $.DELETE_TODO:
       const deletedTodo = action.payload;
       return state.filter(todoId => todoId !== deletedTodo._id);
+    case $.RESTORE_TODOS:
+      return action.payload.map(todo => todo._id);
     default:
       return state;
   }

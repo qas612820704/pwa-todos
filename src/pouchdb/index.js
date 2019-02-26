@@ -1,5 +1,8 @@
 import PouchDB from 'pouchdb';
+import upsert from 'pouchdb-upsert';
 import { name } from '../../package.json';
+
+PouchDB.plugin(upsert);
 
 const db = new PouchDB(name);
  db.changes({

@@ -1,28 +1,31 @@
 import uuid from 'uuid/v4';
+import { omitBy } from 'lodash';
 import * as $ from './constants';
 
-export function getTodos() {
+export function restoreTodos() {
   return async (dispatch, getState, { db }) => {
-    const todos = await db
+    const withDeletedTodos = await db
       .allDocs({
         include_docs: true,
       })
       .then(result => result.rows)
       .then(rows => rows.map(row => row.doc));
 
-    todos.forEach(todo => {
-      dispatch({
-        type: $.ADD_TODO,
-        payload: todo,
-      });
-    });
+    const todos = withDeletedTodos
+      .filter(todo => !todo.deletedAt)
+      .map(todo => omitBy(todo, '_rev'));
+
+    dispatch({
+      type: $.RESTORE_TODOS,
+      payload: todos,
+    })
 
     return todos;
   }
 }
 
 export function addTodo(fields) {
-  return async (dispatch, getState, api) => {
+  return async (dispatch) => {
     const todo = {
       _id: uuid(),
       ...fields,
@@ -34,26 +37,26 @@ export function addTodo(fields) {
     });
 
     return await dispatch(
-      syncTodoRequest(todo._id),
+      storeTodoRequest(todo._id),
     );
   }
 }
 
 export function updateTodo(todo) {
-  return async (dispatch, getState, api) => {
+  return async (dispatch) => {
     dispatch({
      type: $.UPDATE_TODO,
      payload: todo,
     });
 
     return await dispatch(
-      syncTodoRequest(todo._id),
+      storeTodoRequest(todo._id),
     );
   }
 }
 
 export function deleteTodo(todoId) {
-  return async (dispatch, getState, api) => {
+  return async (dispatch) => {
     dispatch({
       type: $.DELETE_TODO,
       payload: {
@@ -62,13 +65,13 @@ export function deleteTodo(todoId) {
      });
 
     return await dispatch(
-      syncTodoRequest(todoId),
+      storeTodoRequest(todoId),
     );
   }
 }
 
 export function activateTodo(todoId) {
-  return async (dispatch, getState, api) => {
+  return async (dispatch) => {
     dispatch({
       type: $.ACTIVATE_TODO,
       payload: {
@@ -77,13 +80,13 @@ export function activateTodo(todoId) {
      });
 
     return await dispatch(
-      syncTodoRequest(todoId),
+      storeTodoRequest(todoId),
     );
   }
 }
 
 export function deactivateTodo(todoId) {
-  return async (dispatch, getState, api) => {
+  return async (dispatch) => {
     dispatch({
       type: $.DEACTIVATE_TODO,
       payload: {
@@ -91,8 +94,8 @@ export function deactivateTodo(todoId) {
       },
      });
 
-     return await dispatch(
-      syncTodoRequest(todoId),
+    return await dispatch(
+      storeTodoRequest(todoId),
     );
   }
 }
@@ -117,38 +120,28 @@ export function deactiveAllTodos(todoIds = []) {
   }
 }
 
-export function syncTodoRequest(todoId) {
+export function storeTodoRequest(todoId) {
   return async (dispatch, getState, { db }) => {
     dispatch({
-      type: $.SYNCING_TODO_REQUEST,
+      type: $.STORING_TODO_REQUEST,
       payload: { _id: todoId },
     });
 
-    const {
-      data: todo,
-      deletedAt: isDeleted,
-    } = getState().todos.byId[todoId];
+    const todo = getState().todos.byId[todoId];
 
     try {
-      const response = await db
-        .put({
-          ...todo,
-          _deleted: !!isDeleted,
-        }, {
-          force: true,
-        });
-
-      const syncedTodo = !!isDeleted
-        ? { _id: response.id }
-        : await db.get(response.id);
+      await db.upsert(todoId, (doc) => ({
+        ...doc,
+        ...todo,
+      }));
 
       return dispatch({
-        type: $.SYNCING_TODO_SUCCESS,
-        payload: syncedTodo,
-      })
+        type: $.STORING_TODO_SUCCESS,
+        payload: { _id: todoId },
+      });
     } catch (error) {
       return dispatch({
-        type: $.SYNCING_TODO_FAILURE,
+        type: $.STORING_TODO_FAILURE,
         payload: {
           _id: todoId,
           error,

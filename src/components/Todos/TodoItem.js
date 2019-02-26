@@ -166,7 +166,7 @@ function useTodo(todoId) {
   const dispatch = useDispatch();
 
   return {
-    todo: todo.data,
+    todo: todo,
     activateTodo: useCallback(
       () => {
         dispatch(activateTodo(todoId));

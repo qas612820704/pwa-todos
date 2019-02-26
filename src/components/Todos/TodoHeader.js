@@ -59,7 +59,7 @@ function ToggleAllBtn() {
   const isAllTodosCompeleted = useMappedState(
     useCallback(
       state => state.todos.allIds
-        .map(todoId => state.todos.byId[todoId].data)
+        .map(todoId => state.todos.byId[todoId])
         .every(todo => todo.completedAt),
       [],
     ),

@@ -1,5 +1,5 @@
 {
-  "name": "gatsby-starter-hello-world",
+  "name": "waker",
   "private": true,
   "description": "A simplified bare-bones starter for Gatsby",
   "version": "0.1.0",
@@ -26,6 +26,7 @@
     "gatsby-plugin-typography": "^2.2.7",
     "lodash": "^4.17.11",
     "mongoose": "^5.4.14",
+    "pouchdb": "^7.0.0",
     "react": "^16.8.2",
     "react-dom": "^16.8.2",
     "react-typography": "^0.16.18",
@@ -35,6 +36,7 @@
     "typeface-noto-sans": "^0.0.54",
     "typography": "^0.16.18",
     "typography-theme-wordpress-2015": "^0.16.18",
+    "url-pattern": "^1.0.3",
     "uuid": "^3.3.2"
   },
   "repository": {

@@ -1,2 +1,2 @@
-import wrapRedux from './src/layout/wrapRedux';
-export const wrapRootElement = wrapRedux;
+import createWrapRedux from './src/layout/createWrapRedux';
+export const wrapRootElement = createWrapRedux();

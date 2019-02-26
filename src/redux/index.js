@@ -10,7 +10,10 @@ const devtools = process.env.NODE_ENV === 'development' && windowGlobal.devTools
   ? window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
   : f => f;
 
-export const createStore = () => reduxCreateStore(reducer, compose(
-  applyMiddleware(thunk.withExtraArgument(api)),
+export const createStore = ({ thunkExtraArgument }) => reduxCreateStore(reducer, compose(
+  applyMiddleware(thunk.withExtraArgument({
+    api,
+    ...thunkExtraArgument,
+  })),
   devtools,
 ));
